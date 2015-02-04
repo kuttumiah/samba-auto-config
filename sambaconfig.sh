@@ -62,7 +62,7 @@ function directory_conflict_chack () {
               directory_conflict_chack
               ;; 
            [nN] | [nN][oO])
-              break
+              return
               ;; 
            *)  
               echo "Please enter only 'yes' or 'no'" 
@@ -79,7 +79,7 @@ function directory_conflict_chack () {
 # start function to get global variables for config
 function global_values () {
     # global configuration parameters
-    echo "[global]" > /etc/samba/smb.conf
+    echo "[global]" | sudo tee /etc/samba/smb.conf > /dev/null
     
     read -p "Name of the Workgroup of your host machine [$WORKGROUP] " WORKGROUP
     while [[ -z "$WORKGROUP" ]]; do
@@ -178,34 +178,38 @@ function directory_values () {
 # start function to write global settings in config
 function global_config () {
     # global configuration
-    echo -e "\tworkgroup = $WORKGROUP" >> /etc/samba/smb.conf
-    echo -e "\tserver string = $S_STRING" >> /etc/samba/smb.conf
-    echo -e "\tsecurity = user" >> /etc/samba/smb.conf
-    echo -e "\tmap to guest = Bad User" >> /etc/samba/smb.conf
-    echo -e "\tlog file = /var/log/samba/%m.log" >> /etc/samba/smb.conf
-    echo -e "\tmax log size = $MAX_LOG_SIZE" >> /etc/samba/smb.conf
-    echo -e "\thosts allow = $HOST_ALLOW" >> /etc/samba/smb.conf
-    echo -e "\tdns proxy = $PROXY" >> /etc/samba/smb.conf
+    {
+    echo -e "\tworkgroup = $WORKGROUP"
+    echo -e "\tserver string = $S_STRING"
+    echo -e "\tsecurity = user"
+    echo -e "\tmap to guest = Bad User"
+    echo -e "\tlog file = /var/log/samba/%m.log"
+    echo -e "\tmax log size = $MAX_LOG_SIZE"
+    echo -e "\thosts allow = $HOST_ALLOW"
+    echo -e "\tdns proxy = $PROXY"
+    } | sudo tee -a /etc/samba/smb.conf > /dev/null
 }
 # end function to write global settings in config
 
 # start function to write shared directory settings in config
 function directory_config () {
     # add line gap before directory configuration
-    echo >> /etc/samba/smb.conf
+    echo | sudo tee -a /etc/samba/smb.conf > /dev/null
     
     # shared directory configuration
-    echo "[$SHARE_DIRECTORY]" >> /etc/samba/smb.conf
-    echo -e "\tpath = $DIRECTORY_PATH" >> /etc/samba/smb.conf
-    echo -e "\tavailable = yes" >> /etc/samba/smb.conf
-    echo -e "\tbrowsable = yes" >> /etc/samba/smb.conf
-    echo -e "\tpublic = yes" >> /etc/samba/smb.conf
-    echo -e "\tonly guest = yes" >> /etc/samba/smb.conf
-    echo -e "\twritable = yes" >> /etc/samba/smb.conf
-    echo -e "\tforce user = $FORCE_USER" >> /etc/samba/smb.conf
-    echo -e "\tforce group = $FORCE_GROUP" >> /etc/samba/smb.conf
-    echo -e "\tdirectory mask = $DIRECTORY_MASK" >> /etc/samba/smb.conf
-    echo -e "\tcreate mask = $FILE_MASK" >> /etc/samba/smb.conf
+    {
+    echo "[$SHARE_DIRECTORY]"
+    echo -e "\tpath = $DIRECTORY_PATH"
+    echo -e "\tavailable = yes"
+    echo -e "\tbrowsable = yes"
+    echo -e "\tpublic = yes"
+    echo -e "\tonly guest = yes"
+    echo -e "\twritable = yes"
+    echo -e "\tforce user = $FORCE_USER"
+    echo -e "\tforce group = $FORCE_GROUP"
+    echo -e "\tdirectory mask = $DIRECTORY_MASK"
+    echo -e "\tcreate mask = $FILE_MASK"
+    } | sudo tee -a /etc/samba/smb.conf > /dev/null
 }
 # end function to write shared directory settings in config
 
@@ -240,7 +244,7 @@ function initialize_script () {
           fi
           ;; 
        3)  
-          echo "You choose to abort `basename ${0}` from running. Exiting..." 
+          echo "You choose to abort $(basename "${0}") from running. Exiting..." 
           exit 1 # Command to come out of the program with status 1
           ;; 
     esac
@@ -257,7 +261,7 @@ echo "=================================================="
 testparm -s
 echo "=================================================="
 echo
-echo "Please restart samba server"
+echo "Please run \"sudo systemctl restart smbd nmbd\" to restart samba and to take effect of changes on Arch Linux."
 read -p "Press any key to continue... " -n1 -s
 echo
 

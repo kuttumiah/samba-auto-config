@@ -21,7 +21,7 @@ echo "Installation of open-vm-tools and samba completed successfully!"
 # sudo pacman -S dkms linux-headers
 # aurget -S --deps --noedit open-vm-tools-dkms
 
-# configuring for open-vm-tools
+# configuring open-vm-tools
 echo "Configuring open-vm-tools..."
 sudo systemctl stop vmtoolsd.service
 cat /proc/version | sudo tee /etc/arch-release > /dev/null
@@ -29,13 +29,13 @@ sudo sed -i.bak '/vmtoolsd/a KillSignal=SIGKILL' \
 /usr/lib/systemd/system/vmtoolsd.service
 sudo systemctl start vmtoolsd.service
 echo "open-vm-tools configured successfully !"
-# end configuring for open-vm-tools
+# end configuring open-vm-tools
 
-# configuring for open-vm-tools
+# configuring samba file server
 echo "Configuring samba..."
 sudo systemctl enable smbd.service
 sudo systemctl enable nmbd.service
-echo "open-vm-tools configured successfully !"
-# end configuring for open-vm-tools
+echo "samba file server configured successfully !"
+# end configuring samba file server
 
 echo "Please reboot to apply changes successfully !"
