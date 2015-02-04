@@ -2,7 +2,7 @@
 
 # /**
 # * ================================================================================
-# * This is solelydevelopeed to run on Arch Linux or any Arch based distributions.
+# * This is solely developeed to run on Arch Linux or any Arch based distributions.
 # * This script will be used to install open-vm-tools and samba file server.
 # * The file also configures open-vm-tools and set it to run on boot.
 # * @author             Robaiatul Islam Shaon
@@ -23,13 +23,19 @@ echo "Installation of open-vm-tools and samba completed successfully!"
 
 # configuring for open-vm-tools
 echo "Configuring open-vm-tools..."
-
-sudo cat /proc/version | sudo tee -a /etc/arch-release > /dev/null
-# sudo cat /proc/version > /etc/arch-release
 sudo systemctl stop vmtoolsd.service
+cat /proc/version | sudo tee /etc/arch-release > /dev/null
 sudo sed -i.bak '/vmtoolsd/a KillSignal=SIGKILL' \
 /usr/lib/systemd/system/vmtoolsd.service
 sudo systemctl start vmtoolsd.service
-
 echo "open-vm-tools configured successfully !"
+# end configuring for open-vm-tools
+
+# configuring for open-vm-tools
+echo "Configuring samba..."
+sudo systemctl enable smbd.service
+sudo systemctl enable nmbd.service
+echo "open-vm-tools configured successfully !"
+# end configuring for open-vm-tools
+
 echo "Please reboot to apply changes successfully !"
