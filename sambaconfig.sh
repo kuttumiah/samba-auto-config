@@ -62,7 +62,7 @@ function directory_conflict_chack () {
               directory_conflict_chack
               ;; 
            [nN] | [nN][oO])
-              return
+              break
               ;; 
            *)  
               echo "Please enter only 'yes' or 'no'" 
