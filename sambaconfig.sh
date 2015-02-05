@@ -62,7 +62,7 @@ function directory_conflict_chack () {
               directory_conflict_chack
               ;; 
            [nN] | [nN][oO])
-              break
+              return 0
               ;; 
            *)  
               echo "Please enter only 'yes' or 'no'" 
@@ -138,6 +138,10 @@ function directory_values () {
         else
             directory_conflict_chack
         fi
+        if [ "${CHOICE,,}" == "n" ] || [ "${CHOICE,,}" == "no" ]
+        then
+            break
+        fi
     done
     echo "Find shared files on $DIRECTORY_PATH"
     
@@ -177,8 +181,8 @@ function directory_values () {
 
 # start function to write global settings in config
 function global_config () {
-    # global configuration
     {
+    # global configuration
     echo -e "\tworkgroup = $WORKGROUP"
     echo -e "\tserver string = $S_STRING"
     echo -e "\tsecurity = user"
@@ -193,11 +197,11 @@ function global_config () {
 
 # start function to write shared directory settings in config
 function directory_config () {
+    {
     # add line gap before directory configuration
-    echo | sudo tee -a /etc/samba/smb.conf > /dev/null
+    echo
     
     # shared directory configuration
-    {
     echo "[$SHARE_DIRECTORY]"
     echo -e "\tpath = $DIRECTORY_PATH"
     echo -e "\tavailable = yes"
